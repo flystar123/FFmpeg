@@ -47,6 +47,8 @@ typedef struct SVCContext {
     int skip_frames;
     int skipped;
     int cabac;
+    int iMaxQp;
+    int iRCMode;
 } SVCContext;
 
 #define OFFSET(x) offsetof(SVCContext, x)
@@ -71,6 +73,8 @@ static const AVOption options[] = {
     { "max_nal_size", "set maximum NAL size in bytes", OFFSET(max_nal_size), AV_OPT_TYPE_INT, { .i64 = 0 }, 0, INT_MAX, VE },
     { "allow_skip_frames", "allow skipping frames to hit the target bitrate", OFFSET(skip_frames), AV_OPT_TYPE_BOOL, { .i64 = 0 }, 0, 1, VE },
     { "cabac", "Enable cabac", OFFSET(cabac), AV_OPT_TYPE_INT, { .i64 = 0 }, 0, 1, VE },
+    { "iMinQp", "iMinQp", OFFSET(iMinQp), AV_OPT_TYPE_INT, { .i64 = 0 }, 0, 51, VE },
+    { "iMaxQp", "iMaxQp", OFFSET(iMaxQp), AV_OPT_TYPE_INT, { .i64 = 51 }, 0, 51, VE },
     { NULL }
 };
 
@@ -181,6 +185,8 @@ FF_ENABLE_DEPRECATION_WARNINGS
     param.sSpatialLayers[0].sSliceCfg.uiSliceMode               = s->slice_mode;
     param.sSpatialLayers[0].sSliceCfg.sSliceArgument.uiSliceNum = avctx->slices;
 #endif
+    param.iMinQp = s->iMinQp;
+    param.iMaxQp = s->iMaxQp;
 
     if (s->slice_mode == SM_SIZELIMITED_SLICE) {
         if (s->max_nal_size){
