@@ -977,6 +977,26 @@ static int func_strftime(AVFilterContext *ctx, AVBPrint *bp,
     return 0;
 }
 
+static int func_strftime_flystar(AVFilterContext *ctx, AVBPrint *bp,
+                         char *fct, unsigned argc, char **argv, int tag)
+{
+    //const char *fmt = argc ? argv[0] : "%Y-%m-%d %H:%M:%S";
+    const char *fmt = "%Y-%m-%d %H:%M:%S";
+    time_t now;
+    struct tm tm;
+    const char *tmz = argv[0];
+    
+    int tz = atoi(tmz);
+
+    time(&now);
+
+    now += (3600 * tz);
+
+    tm = *gmtime_r(&now, &tm);
+    av_bprint_strftime(bp, fmt, &tm);
+    return 0;
+}
+
 static int func_eval_expr(AVFilterContext *ctx, AVBPrint *bp,
                           char *fct, unsigned argc, char **argv, int tag)
 {
@@ -1074,6 +1094,7 @@ static const struct drawtext_function {
     { "frame_num", 0, 0, 0,   func_frame_num },
     { "n",         0, 0, 0,   func_frame_num },
     { "metadata",  1, 2, 0,   func_metadata },
+    { "localtime_flystar",  0, 1, 0,   func_strftime_rong },
 };
 
 static int eval_function(AVFilterContext *ctx, AVBPrint *bp, char *fct,
