@@ -39,7 +39,7 @@ typedef struct H264BSFContext {
 
 static int alloc_and_copy(AVPacket *out,
                           const uint8_t *sps_pps, uint32_t sps_pps_size,
-                          const uint8_t *in, uint32_t in_size, int pts)
+                          const uint8_t *in, uint32_t in_size, int ps)
 {
     uint32_t offset         = out->size;
     uint8_t nal_header_size = offset == 0 || ps ? 4 : 3;
